@@ -13,22 +13,27 @@ This document describes the MTS API which can be used by applications to perform
 
 ## Basics
 
+### Authentication
+
+All HTTP calls (with exceptions noted below) must contain an API Access Token contained in an Authorization header with the Bearer authentication scheme.
+
+An API Access token can be generated within the MTS application by an administrator. More details to come.
+
 ### API Methods
 
 The API is implemented as an HTTP based set of methods that use JSON as the data representation format.
 The following methods are supported:
 
-| Method                 | Type    | HTTP Verb | Purpose                                                         |
-| ---------------------- | ------- | --------- | --------------------------------------------------------------- |
-| authentication-sign-in | Command | POST      | Send credentials to the server and get an access token. Note 1. |
-| test-request           | Command | POST      | Request a new meter test                                        |
-| test-cancel            | Command | DELETE    | Cancel a previously requested test                              |
-| test-status            | Query   | GET       | Read the current status of a previously requested test          |
-| service-status         | Query   | GET       | Check the current status and version of the MTS server. Note 1. |
+| Method         | Type    | HTTP Verb | Purpose                                                         |
+| -------------- | ------- | --------- | --------------------------------------------------------------- |
+| test-request   | Command | POST      | Request a new meter test                                        |
+| test-cancel    | Command | DELETE    | Cancel a previously requested test                              |
+| test-status    | Query   | GET       | Read the current status of a previously requested test          |
+| service-status | Query   | GET       | Check the current status and version of the MTS server. Note 1. |
 
 Notes
 
-1. These methods do not require an authentication token.
+1. This method does not require an access token.
 
 > Note that the MTS API is only available over HTTPS.
 
@@ -40,7 +45,7 @@ All commands are sent as an HTTP request message and the command parameters are 
 VERB URL
 Accept: application/json
 Content-type: application/json
-
+Authorization: Bearer API-ACCESS-TOKEN
 {
   "param1": "value1",
   "param2": "value2"
@@ -57,6 +62,7 @@ query string in the form:
 ```
 GET URL?param1=value1&param2=value2
 Accept: application/json
+Authorization: Bearer API-ACCESS-TOKEN
 ```
 
 ### Response codes
@@ -89,59 +95,6 @@ In certain cases extra fields may be added to the response object (e.g. see the 
 
 It is envisaged that the response payloads may gain extra properties over time. Therefore to
 assist in maintaining future compatibility the consumers of the service should silently ignore any properties in the response payloads that are not recognised.
-
-## authenticate-sign-in command
-
-The authenticate-sign-in command is used to obtain an access token from the server.
-The access token is returned as a cookie in the response header and must be returned by the client in subsequent calls.
-
-> The authentication cookie will have an expiration time after which
-> it will no longer be accepted by the server and the server will respond
-> to all requests with response code 401. In this case the
-> authenticate-sign-in command must be repeated to obtain a new authentication token.
-
-#### JSON Parameters
-
-| Name     | Type   | Value        | Mandatory |
-| -------- | ------ | ------------ | --------- |
-| username | String | MTS username | NO        |
-| password | String | MTS password | NO        |
-
-#### Response
-
-If the credentials are correct the server will respond with
-response code 200 and a cookie containing an authentication
-token. The cookie name will start with COHERENT-DCS-API.
-
-#### Sample
-
-```
-POST https://www.coherent-research.co.uk/MTS/authenticate-sign-in
-Accepts: application/json
-Content-type: application/json
-
-{"username": "user", "password": "mypassword" }
-
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-Set-Cookie: COHERENT-MTS-API ...
-
-{
-  "serviceVersion": "3.0.0"
-}
-```
-
-The cookie should be sent by the client to the
-server in all subsequent HTTP messages. The information returned in
-the response body is for information only.
-
-Once authenticated the client must include the access code as a cookie in the header, e.g.:
-
-```
-GET https://www.coherent-research.co.uk/MTS/xxx
-Accept: application/json
-Cookie: COHERENT-MTS-API...
-```
 
 ## test-request command
 
@@ -177,7 +130,7 @@ If the request is accepted the HTTP response will have a status code 200 and the
 POST https://www.coherent-research.co.uk/MTS/test-request
 Accepts: application/json
 Content-type: application/json
-Cookie: COHERENT-MTS-API...
+Authorization: Bearer API-ACCESS-TOKEN
 
 {
   "requestReference": "ABC",
@@ -204,7 +157,7 @@ Content-Type: application/json; charset=utf-8
 POST https://www.coherent-research.co.uk/MTS/test-request
 Accepts: application/json
 Content-type: application/json
-Cookie: COHERENT-MTS-API...
+Authorization: Bearer API-ACCESS-TOKEN
 
 {
   "requestReference": "ABC",
@@ -249,7 +202,7 @@ The test-cancel command will use an HTTP POST message and the parameters will be
 DELETE https://www.coherent-research.co.uk/MTS/test-cancel
 Accepts: application/json
 Content-type: application/json
-Cookie: COHERENT-MTS-API...
+Authorization: Bearer API-ACCESS-TOKEN
 
 {
   "testId": 1234
@@ -338,7 +291,7 @@ A Register Survey Value Object contains survey data for an individual register/c
 ```
 GET https://www.coherent-research.co.uk/MTS/test-status?testid=1234
 Accepts: application/json
-Cookie: COHERENT-MTS-API...
+Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -354,7 +307,7 @@ Content-Type: application/json; charset=utf-8
 ```
 GET https://www.coherent-research.co.uk/MTS/test-status?testid=1234
 Accepts: application/json
-Cookie: COHERENT-MTS-API...
+Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
