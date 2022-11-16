@@ -76,6 +76,7 @@ The following codes are used
 | 400      | Bad Request           | Indicates the request is not valid or understood by the server. The body of the response will provide more details as to why the request is considered bad.                                   |
 | 401      | Unauthorized          | Indicates that the caller has not provided a valid authentication token (if required). See above                                                                                              |
 | 403      | Forbidden             | Indicates that the caller does not have the appropriate authority to perform the request (even though the authentication token is valid). The body of the response will provide more details. |
+| 404      | Not found             | This is only returned if the URL is incorrect and not to convey any application specific information. If e.g. a TestId does not correspond to an existing test 400 will be used instead.      |
 | 429      | Too Many Requests     | Indicates that the caller has sent too many requests in a given amount of time. See the chapter Rate Limiting for more details.                                                               |
 | 500      | Internal Server Error | Indicates a fault on the server. This should be considered an MTS error and the issue raised with Coherent Research                                                                           |
 
@@ -85,9 +86,9 @@ A response from the server (either to a command or a query) may contain data as 
 
 In the case of an error (i.e. any response code > 200) the response data will contains the following parameter:
 
-| Name    | Type   | Value                                                | Mandatory |
-| ------- | ------ | ---------------------------------------------------- | --------- |
-| details | String | Reason the request failed as a human readable string | NO        |
+| Name    | Type             | Value                                                                    | Mandatory |
+| ------- | ---------------- | ------------------------------------------------------------------------ | --------- |
+| details | Array of strings | Reason or reasons the request failed as a human readable list of strings | NO        |
 
 In certain cases extra fields may be added to the response object (e.g. see the chapter on Rate limiting below).
 
