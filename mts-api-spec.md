@@ -663,6 +663,18 @@ Rate limiting will be applied to the API.
 
 When the rate is exceeded the request will be rejected with the HTTP status code 429.
 
+## Input/Output Constraints
+
+More details to follow:
+
+Constraints will be put on certain input parameters:
+
+- The number of tests in a single batch.
+- The maximum number of survey days requested per tests.
+- The maximum time range in a search query.
+
+Queries that respond with arrays, e.g. test-search and batch-status, may have a paging/chunking mechanism to avoid overly large responses.
+
 ### JSON Response parameters
 
 | Name              | Type    | Value                                                                     | Mandatory |
