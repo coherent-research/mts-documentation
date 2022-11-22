@@ -663,6 +663,12 @@ Rate limiting will be applied to the API.
 
 When the rate is exceeded the request will be rejected with the HTTP status code 429.
 
+### JSON Response parameters
+
+| Name              | Type    | Value                                                                     | Mandatory |
+| ----------------- | ------- | ------------------------------------------------------------------------- | --------- |
+| backOffSuggestion | Integer | A suggested period that the caller should wait before retrying in seconds | YES       |
+
 ## Input/Output Constraints
 
 More details to follow:
@@ -674,12 +680,6 @@ Constraints will be put on certain input parameters:
 - The maximum time range in a search query.
 
 Queries that respond with arrays, e.g. test-search and batch-status, may have a paging/chunking mechanism to avoid overly large responses.
-
-### JSON Response parameters
-
-| Name              | Type    | Value                                                                     | Mandatory |
-| ----------------- | ------- | ------------------------------------------------------------------------- | --------- |
-| backOffSuggestion | Integer | A suggested period that the caller should wait before retrying in seconds | YES       |
 
 ## CORS
 
