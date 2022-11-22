@@ -32,6 +32,7 @@ The following methods are supported:
 | batch-cancel   | Command | DELETE    | Cancel a previously requested batch of tests                     |
 | test-status    | Query   | GET       | Read the current status of a previously requested test           |
 | batch-status   | Query   | GET       | Read the current status of a previously requested batch of tests |
+| test-search    | Query   | GET       | Search for tests based on criteria such as date, meter type etc  |
 | service-status | Query   | GET       | Check the current status and version of the MTS server. Note 1.  |
 
 Notes
@@ -513,7 +514,7 @@ A Status Summary Object contains the summary of the status of an individual test
 | remoteAddress    | String  |                                                                       | YES       |
 | resultSummary    | String  | This parameter will have the same format as in the test-status query. | YES       |
 
-### Sample - pending test
+### Sample
 
 ```
 GET https://www.coherent-research.co.uk/MTS/batch-status?batchId=1234
@@ -536,14 +537,14 @@ Content-Type: application/json; charset=utf-8
       "resultSummary": "SUCCESS",
     },
     {
-      "testId": 1000,
+      "testId": 1001,
       "requestReference": "0002",
       "meterType": "ELSTER_A1700",
       "remoteAddress": "07777000001",
       "resultSummary": "PENDING",
     },
     {
-      "testId": 1000,
+      "testId": 1002,
       "requestReference": "0003",
       "meterType": "ELSTER_A1700",
       "remoteAddress": "07777000002",
@@ -551,6 +552,75 @@ Content-Type: application/json; charset=utf-8
     }
   ]
 }
+```
+
+## test-search query
+
+This query allows the client to search the system for tests that match the specified search criteria. The query will return a list of matching tests.
+
+> Note that matching tests will be returned irrespective of whether they were initiated via a test-request command or a batch-request command
+
+| Name             | Type   | Value                                         | Mandatory |
+| ---------------- | ------ | --------------------------------------------- | --------- |
+| requestReference | String |                                               | NO        |
+| fromTime         | String | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ | YES       |
+| toTime           | String | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ | NO        |
+| meterType        | String |                                               | NO        |
+| remoteAddress    | String |                                               | NO        |
+
+### JSON Response parameters
+
+The response will return an array of Status Summary Objects.
+
+**Status Summary Object**
+
+A Status Summary Object contains the summary of the status of an individual test.
+
+| Name             | Type    | Value                                                                 | Mandatory |
+| ---------------- | ------- | --------------------------------------------------------------------- | --------- |
+| testId           | Integer | The unique Test ID for the test                                       | YES       |
+| batchId          | Integer | The unique Batch ID for the test if applicable                        | NO        |
+| requestReference | String  |                                                                       | NO        |
+| meterType        | String  |                                                                       | YES       |
+| remoteAddress    | String  |                                                                       | YES       |
+| resultSummary    | String  | This parameter will have the same format as in the test-status query. | YES       |
+
+### Sample
+
+```
+GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTER_A1700
+Accepts: application/json
+Authorization: Bearer API-ACCESS-TOKEN
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+[
+  {
+    "testId": 1000,
+    "requestReference": "0001",
+    "meterType": "ELSTER_A1700",
+    "remoteAddress": "07777000000",
+    "resultSummary": "SUCCESS",
+  },
+  {
+    "testId": 1001,
+    "batchId": 123,
+    "requestReference": "0002",
+    "meterType": "ELSTER_A1700",
+    "remoteAddress": "07777000001",
+    "resultSummary": "PENDING",
+  },
+  {
+    "testId": 1002,
+    "batchId": 123,
+    "requestReference": "0003",
+    "meterType": "ELSTER_A1700",
+    "remoteAddress": "07777000002",
+    "resultSummary": "PENDING",
+  }
+]
+
 ```
 
 ## service-status query
