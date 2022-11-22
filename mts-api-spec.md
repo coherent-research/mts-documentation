@@ -24,12 +24,15 @@ An API Access token can be generated within the MTS application by an administra
 The API is implemented as an HTTP based set of methods that use JSON as the data representation format.
 The following methods are supported:
 
-| Method         | Type    | HTTP Verb | Purpose                                                         |
-| -------------- | ------- | --------- | --------------------------------------------------------------- |
-| test-request   | Command | POST      | Request a new meter test                                        |
-| test-cancel    | Command | DELETE    | Cancel a previously requested test                              |
-| test-status    | Query   | GET       | Read the current status of a previously requested test          |
-| service-status | Query   | GET       | Check the current status and version of the MTS server. Note 1. |
+| Method         | Type    | HTTP Verb | Purpose                                                          |
+| -------------- | ------- | --------- | ---------------------------------------------------------------- |
+| test-request   | Command | POST      | Request a new meter test                                         |
+| batch-request  | Command | POST      | Request a list of new meter tests in a batch                     |
+| test-cancel    | Command | DELETE    | Cancel a previously requested test                               |
+| batch-cancel   | Command | DELETE    | Cancel a previously requested batch of tests                     |
+| test-status    | Query   | GET       | Read the current status of a previously requested test           |
+| batch-status   | Query   | GET       | Read the current status of a previously requested batch of tests |
+| service-status | Query   | GET       | Check the current status and version of the MTS server. Note 1.  |
 
 Notes
 
@@ -99,10 +102,7 @@ assist in maintaining future compatibility the consumers of the service should s
 
 ## test-request command
 
-The test-request command is used to request a new meter test.
-
-The test-request command will use an HTTP POST message and the command parameters will be sent in the body of the message as a JSON object.
-If the request is accepted the HTTP response will have a status code 200 and the response parameters will be sent in the body of the message as a JSON object.
+The test-request command is used to request a new meter test. A unique Test Id will be returned which can be used query the test status.
 
 ### JSON Command Parameters
 
@@ -179,11 +179,62 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+## batch-request command
+
+The batch-request command is used to request a set of new meter tests in one go. The request will return a BatchId that can be used to check the status of the whole set.
+
+### JSON Command Parameters
+
+The batch-request command must contain an array of objects as defined in the test-request command.
+
+### JSON Response parameters
+
+| Name    | Type    | Value             | Mandatory |
+| ------- | ------- | ----------------- | --------- |
+| batchId | Integer | The MTS batch ID. | YES       |
+
+### Sample - successful case
+
+```
+POST https://www.coherent-research.co.uk/MTS/batch-request
+Accepts: application/json
+Content-type: application/json
+Authorization: Bearer API-ACCESS-TOKEN
+
+[
+  {
+     "requestReference": "ABC",
+     "meterType": "ELSTER_A1700",
+     "remoteAddress": "07777000000",
+     "outstationAddress": "1",
+     "serialNumber": "12345678",
+     "password": "AAAA0000",
+     "surveyDays": 10,
+     "surveyDate": "2019-12-01"
+  },
+  {
+     "requestReference": "ABC",
+     "meterType": "ELSTER_A1700",
+     "remoteAddress": "07777000001",
+     "outstationAddress": "1",
+     "serialNumber": "23456789",
+     "password": "AAAA0001",
+     "surveyDays": 3,
+     "surveyDate": "2019-12-02"
+  },
+]
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+  "batchId": 1234
+}
+```
+
 ## test-cancel command
 
 The client can request the cancellation of any previously requested test. MTS will remove the matching request from the queue. If the request has already been processed (or is being processed) MTS will respond positively.
-
-The test-cancel command will use an HTTP POST message and the parameters will be sent in the body of the message as a JSON object.
 
 ### JSON Request Parameters
 
@@ -217,11 +268,50 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+## batch-cancel command
+
+The client can request the cancellation of any previously requested batch of tests.
+Cancelling a batch of tests means that all pending tests will be deleted from the system. Optionally, all completed tests may also be deleted from the system.
+
+### JSON Request Parameters
+
+| Name            | Type    | Value                                                                                                                                                                                                                      | Mandatory |
+| --------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| batchId         | Integer | The batch ID returned by the batch-request command                                                                                                                                                                         | YES       |
+| deleteCompleted | Bool    | Delete completed tests. If set to _true_ all completed tests in the batch will be deleted. If set to _false_ competed tests will be kept by MTS but pending tests will be cancelled and deleted. Default value is _false_. | NO        |
+
+### JSON Response parameters
+
+| Name           | Type    | Value                                                                                                                      | Mandatory |
+| -------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- | --------- |
+| batchId        | String  | The batch ID returned by the batch-request command                                                                         | YES       |
+| cancelledCount | Integer | The number of tests cancelled. If _deleteCompleted_ is set to _false_ completed tests will not be included in this number. | YES       |
+
+### Sample - successful case
+
+```
+DELETE https://www.coherent-research.co.uk/MTS/batch-cancel
+Accepts: application/json
+Content-type: application/json
+Authorization: Bearer API-ACCESS-TOKEN
+
+{
+  "batchId": 1234
+  "deleteCompleted": true
+}
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+  "testId": 1234,
+  "cancelledCount": 100
+}
+```
+
 ## test-status query
 
-The client can request the status of any previously requested test.
-
-The test-status query will use an HTTP GET message and the parameters will be sent as part of the URL and the response will contain the information in JSON format in the response body.
+The client can request the status of any previously requested test using the Test ID.
 
 ### URL Request Parameters
 
@@ -388,6 +478,79 @@ Content-Type: application/json; charset=utf-8
   }
 ]
 
+```
+
+## batch-status query
+
+The client can request the status of any previously requested batch of tests using the Batch ID.
+This query will return a summary of all tests in the batch along with the individual Test IDs.
+To fetch the actual status (and the completed results) for a given test the test-status query must be used with the Test ID.
+
+### URL Request Parameters
+
+| Name    | Type    | Value                                           | Mandatory |
+| ------- | ------- | ----------------------------------------------- | --------- |
+| batchId | Integer | Batch ID returned by the batch-request command. | YES       |
+
+### JSON Response parameters
+
+| Name           | Type    | Value                                      | Mandatory |
+| -------------- | ------- | ------------------------------------------ | --------- |
+| batchId        | Integer | The MTS Batch ID.                          | YES       |
+| totalCount     | Integer | The total number of tests in the batch     | YES       |
+| completedCount | Integer | The number of completed tests in the batch | YES       |
+| status         | Array   | An array of Status Summary objects         | YES       |
+
+**Status Summary Object**
+
+A Status Summary Object contains the summary of the status of an individual test.
+
+| Name             | Type    | Value                                                                 | Mandatory |
+| ---------------- | ------- | --------------------------------------------------------------------- | --------- |
+| testId           | Integer | The unique Test ID for the test                                       | YES       |
+| requestReference | String  |                                                                       | NO        |
+| meterType        | String  |                                                                       | YES       |
+| remoteAddress    | String  |                                                                       | YES       |
+| resultSummary    | String  | This parameter will have the same format as in the test-status query. | YES       |
+
+### Sample - pending test
+
+```
+GET https://www.coherent-research.co.uk/MTS/batch-status?batchId=1234
+Accepts: application/json
+Authorization: Bearer API-ACCESS-TOKEN
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+  "batchId": 1234,
+  "totalCount": 3,
+  "completedCount": 1,
+  "status": [
+    {
+      "testId": 1000,
+      "requestReference": "0001",
+      "meterType": "ELSTER_A1700",
+      "remoteAddress": "07777000000",
+      "resultSummary": "SUCCESS",
+    },
+    {
+      "testId": 1000,
+      "requestReference": "0002",
+      "meterType": "ELSTER_A1700",
+      "remoteAddress": "07777000001",
+      "resultSummary": "PENDING",
+    },
+    {
+      "testId": 1000,
+      "requestReference": "0003",
+      "meterType": "ELSTER_A1700",
+      "remoteAddress": "07777000002",
+      "resultSummary": "PENDING",
+    }
+  ]
+}
 ```
 
 ## service-status query
