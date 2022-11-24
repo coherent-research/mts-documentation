@@ -19,6 +19,8 @@ All HTTP calls (with exceptions noted below) must contain an API Access Token co
 
 An API Access token can be generated within the MTS application by an administrator. More details to come.
 
+> Note that the MTS API is only available over HTTPS.
+
 ### API Methods
 
 The API is implemented as an HTTP based set of methods that use JSON as the data representation format.
@@ -38,8 +40,6 @@ The following methods are supported:
 Notes
 
 1. This method does not require an access token.
-
-> Note that the MTS API is only available over HTTPS.
 
 ### Command Requests
 
@@ -107,18 +107,18 @@ The test-request command is used to request a new meter test. A unique Test Id w
 
 ### JSON Command Parameters
 
-| Name              | Type    | Value                                                                                                                                                                                                                                                                                                                                                          | Mandatory |
-| ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| requestReference  | String  | Optional reference that the client may include in the request for their own use, e.g. MPAN. This parameter will be returned in the result but has no other significance.                                                                                                                                                                                       | NO        |
-| priority          | Integer | An integer value. 1 => test will be run immediately, 2 => test will be run overnight. If omitted a value is 2 is assumed.                                                                                                                                                                                                                                      | NO.       |
-| meterType         | String  | Specifies the type of meter to be tested. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                                               | YES       |
-| remoteAddress     | String  | Specifies the remote address used to connect to the meter. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                              | YES       |
-| comsSettings      | String  | Normally this field should be omitted but for cases where meters are configured in a non standard way this field can be used to override the default coms settings. This is only applicable for modem connections and can be used to specify the data bits, parity and stop bits in the form DPS, e.g. 7E1 to specify 7 stop bits, even parity and 1 stop bit. | NO        |
-| outstationAddress | String  | Specifies the outstation address/device id of the meter.                                                                                                                                                                                                                                                                                                       | NO        |
-| serialNumber      | String  | The meter serial number. If included a check will be made to determine if the meter returns this serial number and an error will be reported if there is a mismatch                                                                                                                                                                                            | NO        |
-| password          | String  | The meter password.                                                                                                                                                                                                                                                                                                                                            | NO        |
-| surveyDays        | Number  | Specifies the number of days of survey data to read. If this field is missing or zero no survey data will be collected                                                                                                                                                                                                                                         | NO        |
-| surveyDate        | String  | Specifies the start date for reading survey data in the form yyyy-MM-dd. If this field is empty and surveyDays is > 0 then SURVEY_DATE will be assumed to be SURVEY_DAYS before the date this request is received.                                                                                                                                             | NO        |
+| Name              | Type   | Value                                                                                                                                                                                                                                                                                                                                                          | Mandatory |
+| ----------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| requestReference  | String | Optional reference that the client may include in the request for their own use, e.g. MPAN. This parameter will be returned in the result but has no other significance.                                                                                                                                                                                       | NO        |
+| immediate         | Bool   | An boolean value. true => test will be run immediately, false => test will be run overnight. If omitted a value of false is assumed.                                                                                                                                                                                                                           | NO.       |
+| meterType         | String | Specifies the type of meter to be tested. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                                               | YES       |
+| remoteAddress     | String | Specifies the remote address used to connect to the meter. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                              | YES       |
+| comsSettings      | String | Normally this field should be omitted but for cases where meters are configured in a non standard way this field can be used to override the default coms settings. This is only applicable for modem connections and can be used to specify the data bits, parity and stop bits in the form DPS, e.g. 7E1 to specify 7 stop bits, even parity and 1 stop bit. | NO        |
+| outstationAddress | String | Specifies the outstation address/device id of the meter.                                                                                                                                                                                                                                                                                                       | NO        |
+| serialNumber      | String | The meter serial number. If included a check will be made to determine if the meter returns this serial number and an error will be reported if there is a mismatch                                                                                                                                                                                            | NO        |
+| password          | String | The meter password.                                                                                                                                                                                                                                                                                                                                            | NO        |
+| surveyDays        | Number | Specifies the number of days of survey data to read. If this field is missing or zero no survey data will be collected                                                                                                                                                                                                                                         | NO        |
+| surveyDate        | String | Specifies the start date for reading survey data in the form yyyy-MM-dd. If this field is empty and surveyDays is > 0 then SURVEY_DATE will be assumed to be SURVEY_DAYS before the date this request is received.                                                                                                                                             | NO        |
 
 ### JSON Response parameters
 
@@ -136,7 +136,7 @@ Authorization: Bearer API-ACCESS-TOKEN
 
 {
   "requestReference": "ABC",
-  "meterType": "ELSTER_A1700",
+  "meterType": "ELSTERA1700",
   "remoteAddress": "07777000000",
   "outstationAddress": "1",
   "serialNumber": "12345678",
@@ -163,7 +163,7 @@ Authorization: Bearer API-ACCESS-TOKEN
 
 {
   "requestReference": "ABC",
-  "meterType": "ELSTER_A1700",
+  "meterType": "ELSTERA1700",
   "remoteAddress": "abc",
   "outstationAddress": "1",
   "serialNumber": "12345678",
@@ -205,7 +205,7 @@ Authorization: Bearer API-ACCESS-TOKEN
 [
   {
      "requestReference": "ABC",
-     "meterType": "ELSTER_A1700",
+     "meterType": "ELSTERA1700",
      "remoteAddress": "07777000000",
      "outstationAddress": "1",
      "serialNumber": "12345678",
@@ -215,7 +215,7 @@ Authorization: Bearer API-ACCESS-TOKEN
   },
   {
      "requestReference": "ABC",
-     "meterType": "ELSTER_A1700",
+     "meterType": "ELSTERA1700",
      "remoteAddress": "07777000001",
      "outstationAddress": "1",
      "serialNumber": "23456789",
@@ -407,7 +407,7 @@ Content-Type: application/json; charset=utf-8
 {
   "testId": 1234,
   "requestReference": "0001",
-  "meterType": "ELSTER_A1700",
+  "meterType": "ELSTERA1700",
   "remoteAddress": "07777000000",
   "outstationAddress": "1",
   "serialNumber": "12345678",
@@ -532,21 +532,21 @@ Content-Type: application/json; charset=utf-8
     {
       "testId": 1000,
       "requestReference": "0001",
-      "meterType": "ELSTER_A1700",
+      "meterType": "ELSTERA1700",
       "remoteAddress": "07777000000",
       "resultSummary": "SUCCESS",
     },
     {
       "testId": 1001,
       "requestReference": "0002",
-      "meterType": "ELSTER_A1700",
+      "meterType": "ELSTERA1700",
       "remoteAddress": "07777000001",
       "resultSummary": "PENDING",
     },
     {
       "testId": 1002,
       "requestReference": "0003",
-      "meterType": "ELSTER_A1700",
+      "meterType": "ELSTERA1700",
       "remoteAddress": "07777000002",
       "resultSummary": "PENDING",
     }
@@ -557,20 +557,38 @@ Content-Type: application/json; charset=utf-8
 ## test-search query
 
 This query allows the client to search the system for tests that match the specified search criteria. The query will return a list of matching tests.
+Since there may be a large number of results the client may read the results in pages by using the **limit** and **offset** parameters.
 
 > Note that matching tests will be returned irrespective of whether they were initiated via a test-request command or a batch-request command
 
-| Name             | Type   | Value                                         | Mandatory |
-| ---------------- | ------ | --------------------------------------------- | --------- |
-| requestReference | String |                                               | NO        |
-| fromTime         | String | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ | YES       |
-| toTime           | String | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ | NO        |
-| meterType        | String |                                               | NO        |
-| remoteAddress    | String |                                               | NO        |
+| Name             | Type    | Value                                                                                                                               | Mandatory |
+| ---------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| requestReference | String  |                                                                                                                                     | NO        |
+| fromTime         | String  | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ                                                                                       | YES       |
+| toTime           | String  | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ                                                                                       | NO        |
+| meterType        | String  | Filter results by meter type.                                                                                                       | NO        |
+| remoteAddress    | String  | Filter results by remote address. Note that partial matches are included.                                                           | NO        |
+| status           | String  | Filter results by status. Values are "ALL", "COMPLETED", "PENDING". Default = ALL                                                   | NO        |
+| limit            | Integer | The maximum number of results the server will return in one request. Note 1.                                                        | NO        |
+| offset           | Integer | The number of results to skip. If omitted a value of 0 is assumed.                                                                  | NO        |
+| orderReversed    | Bool    | Results are normally returned in received order. If this parameter is set to true the results will be returned in the reverse order | NO        |
+
+Notes
+
+1. If the client does not include the **limit** parameter the server may still limit the number of results returned if it is above a fixed size. See chapter 'Input/Output Limits'. **limit** may be set to 0 which will result in the server just replying with the number of results. This could be used, e.g., to check the total number of pending tests.
 
 ### JSON Response parameters
 
-The response will return an array of Status Summary Objects.
+| Name             | Type    | Value                                                    | Mandatory |
+| ---------------- | ------- | -------------------------------------------------------- | --------- |
+| totalResultCount | Integer | The total number of matching results.                    | YES       |
+| resultCount      | Integer | The number results contained in **results**. See Note 1. | YES       |
+| offset           | Integer | The current offset                                       | YES       |
+| results          | Array   | Array of Status Summary Objects.                         | NO        |
+
+Notes
+
+1. If no data matches the criteria **resultCount** will be 0 and **results** array will be empty.
 
 **Status Summary Object**
 
@@ -588,38 +606,103 @@ A Status Summary Object contains the summary of the status of an individual test
 ### Sample
 
 ```
-GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTER_A1700
+GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700
 Accepts: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 
-[
-  {
-    "testId": 1000,
-    "requestReference": "0001",
-    "meterType": "ELSTER_A1700",
-    "remoteAddress": "07777000000",
-    "resultSummary": "SUCCESS",
-  },
-  {
-    "testId": 1001,
-    "batchId": 123,
-    "requestReference": "0002",
-    "meterType": "ELSTER_A1700",
-    "remoteAddress": "07777000001",
-    "resultSummary": "PENDING",
-  },
-  {
-    "testId": 1002,
-    "batchId": 123,
-    "requestReference": "0003",
-    "meterType": "ELSTER_A1700",
-    "remoteAddress": "07777000002",
-    "resultSummary": "PENDING",
-  }
-]
+{
+  "totalResultCount": 3,
+  "resultCount": 3,
+  "offset": 0,
+  "results":
+    [
+      {
+        "testId": 1000,
+        "requestReference": "0001",
+        "meterType": "ELSTERA1700",
+        "remoteAddress": "07777000000",
+        "resultSummary": "SUCCESS",
+      },
+      {
+        "testId": 1001,
+        "batchId": 123,
+        "requestReference": "0002",
+        "meterType": "ELSTERA1700",
+        "remoteAddress": "07777000001",
+        "resultSummary": "PENDING",
+      },
+      {
+        "testId": 1002,
+        "batchId": 123,
+        "requestReference": "0003",
+        "meterType": "ELSTERA1700",
+        "remoteAddress": "07777000002",
+        "resultSummary": "PENDING",
+      }
+    ]
+}
+```
+
+### Paging Sample
+
+```
+GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=0
+Accepts: application/json
+Authorization: Bearer API-ACCESS-TOKEN
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+  "totalResultCount": 3,
+  "resultCount": 2,
+  "offset": 0,
+  "results":
+    [
+      {
+        "testId": 1000,
+        "requestReference": "0001",
+        "meterType": "ELSTERA1700",
+        "remoteAddress": "07777000000",
+        "resultSummary": "SUCCESS",
+      },
+      {
+        "testId": 1001,
+        "batchId": 123,
+        "requestReference": "0002",
+        "meterType": "ELSTERA1700",
+        "remoteAddress": "07777000001",
+        "resultSummary": "PENDING",
+      }
+    ]
+}
+
+GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=1
+Accepts: application/json
+Authorization: Bearer API-ACCESS-TOKEN
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+  "totalResultCount": 3,
+  "resultCount": 1,
+  "offset": 1,
+  "results":
+    [
+      {
+        "testId": 1002,
+        "batchId": 123,
+        "requestReference": "0003",
+        "meterType": "ELSTERA1700",
+        "remoteAddress": "07777000002",
+        "resultSummary": "PENDING",
+      }
+    ]
+}
 
 ```
 
@@ -669,17 +752,21 @@ When the rate is exceeded the request will be rejected with the HTTP status code
 | ----------------- | ------- | ------------------------------------------------------------------------- | --------- |
 | backOffSuggestion | Integer | A suggested period that the caller should wait before retrying in seconds | YES       |
 
-## Input/Output Constraints
+## Input/Output Limits
 
-More details to follow:
+The following limits are applied by the server:
 
-Constraints will be put on certain input parameters:
+| Limit                                                                              | Value  |
+| ---------------------------------------------------------------------------------- | ------ |
+| The number of tests in a single batch.                                             | Note 1 |
+| The maximum number of survey days requested per test.                              |        |
+| The maximum time range in a search query.                                          |        |
+| The maximum limit size in a search query.                                          |        |
+| The maximum number of results returned by a search query if no limit is specified. |        |
 
-- The number of tests in a single batch.
-- The maximum number of survey days requested per tests.
-- The maximum time range in a search query.
+Notes
 
-Queries that respond with arrays, e.g. test-search and batch-status, may have a paging/chunking mechanism to avoid overly large responses.
+1. Actual values to be decided.
 
 ## CORS
 
