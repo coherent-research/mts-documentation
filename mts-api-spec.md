@@ -571,7 +571,7 @@ Since there may be a large number of results the client may read the results in 
 | status           | String  | Filter results by status. Values are "ALL", "COMPLETED", "PENDING". Default = ALL                                                   | NO        |
 | limit            | Integer | The maximum number of results the server will return in one request. Note 1.                                                        | NO        |
 | offset           | Integer | The number of results to skip. If omitted a value of 0 is assumed.                                                                  | NO        |
-| orderReversed    | Bool    | Results are normally returned in received order. If this parameter is set to true the results will be returned in the reverse order | NO        |
+| reverseOrder     | Bool    | Results are normally returned in received order. If this parameter is set to true the results will be returned in the reverse order | NO        |
 
 Notes
 
