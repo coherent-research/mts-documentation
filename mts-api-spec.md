@@ -594,14 +594,16 @@ Notes
 
 A Status Summary Object contains the summary of the status of an individual test.
 
-| Name             | Type    | Value                                                                 | Mandatory |
-| ---------------- | ------- | --------------------------------------------------------------------- | --------- |
-| testId           | Integer | The unique Test ID for the test                                       | YES       |
-| batchId          | Integer | The unique Batch ID for the test if applicable                        | NO        |
-| requestReference | String  |                                                                       | NO        |
-| meterType        | String  |                                                                       | YES       |
-| remoteAddress    | String  |                                                                       | YES       |
-| resultSummary    | String  | This parameter will have the same format as in the test-status query. | YES       |
+| Name               | Type    | Value                                                                 | Mandatory |
+| ------------------ | ------- | --------------------------------------------------------------------- | --------- |
+| testId             | Integer | The unique Test ID for the test                                       | YES       |
+| receivedTimestamp  | String  | UTC time in the format YYYY-MM-DDTHH:mm:ssZ                           | YES       |
+| completedTimestamp | String  | UTC time in the format YYYY-MM-DDTHH:mm:ssZ                           | NO        |
+| batchId            | Integer | The unique Batch ID for the test if applicable                        | NO        |
+| requestReference   | String  |                                                                       | NO        |
+| meterType          | String  |                                                                       | YES       |
+| remoteAddress      | String  |                                                                       | YES       |
+| resultSummary      | String  | This parameter will have the same format as in the test-status query. | YES       |
 
 ### Sample
 
@@ -623,6 +625,8 @@ Content-Type: application/json; charset=utf-8
         "testId": 1000,
         "requestReference": "0001",
         "meterType": "ELSTERA1700",
+        "receivedTimestamp": "2022-01-01T00:01:00Z",
+        "completedTimestamp": "2022-01-01T00:02:00Z",
         "remoteAddress": "07777000000",
         "resultSummary": "SUCCESS",
       },
@@ -631,6 +635,8 @@ Content-Type: application/json; charset=utf-8
         "batchId": 123,
         "requestReference": "0002",
         "meterType": "ELSTERA1700",
+        "receivedTimestamp": "2022-01-01T00:01:00Z",
+        "completedTimestamp": "2022-01-01T00:03:00Z",
         "remoteAddress": "07777000001",
         "resultSummary": "PENDING",
       },
@@ -639,6 +645,8 @@ Content-Type: application/json; charset=utf-8
         "batchId": 123,
         "requestReference": "0003",
         "meterType": "ELSTERA1700",
+        "receivedTimestamp": "2022-01-01T00:01:00Z",
+        "completedTimestamp": "2022-01-01T00:04:00Z",
         "remoteAddress": "07777000002",
         "resultSummary": "PENDING",
       }
@@ -666,6 +674,8 @@ Content-Type: application/json; charset=utf-8
         "testId": 1000,
         "requestReference": "0001",
         "meterType": "ELSTERA1700",
+        "receivedTimestamp": "2022-01-01T00:01:00Z",
+        "completedTimestamp": "2022-01-01T00:02:00Z",
         "remoteAddress": "07777000000",
         "resultSummary": "SUCCESS",
       },
@@ -674,6 +684,8 @@ Content-Type: application/json; charset=utf-8
         "batchId": 123,
         "requestReference": "0002",
         "meterType": "ELSTERA1700",
+        "receivedTimestamp": "2022-01-01T00:01:00Z",
+        "completedTimestamp": "2022-01-01T00:03:00Z",
         "remoteAddress": "07777000001",
         "resultSummary": "PENDING",
       }
@@ -698,6 +710,8 @@ Content-Type: application/json; charset=utf-8
         "batchId": 123,
         "requestReference": "0003",
         "meterType": "ELSTERA1700",
+        "receivedTimestamp": "2022-01-01T00:01:00Z",
+        "completedTimestamp": "2022-01-01T00:04:00Z",
         "remoteAddress": "07777000002",
         "resultSummary": "PENDING",
       }
