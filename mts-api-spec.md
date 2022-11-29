@@ -130,7 +130,7 @@ The test-request command is used to request a new meter test. A unique Test Id w
 
 ```
 POST https://www.coherent-research.co.uk/MTS/test-request
-Accepts: application/json
+Accept: application/json
 Content-type: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -157,7 +157,7 @@ Content-Type: application/json; charset=utf-8
 
 ```
 POST https://www.coherent-research.co.uk/MTS/test-request
-Accepts: application/json
+Accept: application/json
 Content-type: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -198,7 +198,7 @@ The batch-request command must contain an array of objects as defined in the tes
 
 ```
 POST https://www.coherent-research.co.uk/MTS/batch-request
-Accepts: application/json
+Accept: application/json
 Content-type: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -253,7 +253,7 @@ The client can request the cancellation of any previously requested test. MTS wi
 
 ```
 DELETE https://www.coherent-research.co.uk/MTS/test-cancel
-Accepts: application/json
+Accept: application/json
 Content-type: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -292,7 +292,7 @@ Cancelling a batch of tests means that all pending tests will be deleted from th
 
 ```
 DELETE https://www.coherent-research.co.uk/MTS/batch-cancel
-Accepts: application/json
+Accept: application/json
 Content-type: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -382,7 +382,7 @@ A Register Survey Value Object contains survey data for an individual register/c
 
 ```
 GET https://www.coherent-research.co.uk/MTS/test-status?testid=1234
-Accepts: application/json
+Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
@@ -398,7 +398,7 @@ Content-Type: application/json; charset=utf-8
 
 ```
 GET https://www.coherent-research.co.uk/MTS/test-status?testid=1234
-Accepts: application/json
+Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
@@ -518,7 +518,7 @@ A Status Summary Object contains the summary of the status of an individual test
 
 ```
 GET https://www.coherent-research.co.uk/MTS/batch-status?batchId=1234
-Accepts: application/json
+Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
@@ -609,7 +609,7 @@ A Status Summary Object contains the summary of the status of an individual test
 
 ```
 GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700
-Accepts: application/json
+Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
@@ -658,7 +658,7 @@ Content-Type: application/json; charset=utf-8
 
 ```
 GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=0
-Accepts: application/json
+Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
@@ -693,7 +693,7 @@ Content-Type: application/json; charset=utf-8
 }
 
 GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=1
-Accepts: application/json
+Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
 HTTP/1.1 200 OK
@@ -741,7 +741,7 @@ This method takes no parameters.
 ```
 GET https://www.coherent-research.co.uk/MTS/service-status
 GET https://www.coherent-research.co.uk/MTS/test-status?testid=1234
-Accepts: application/json
+Accept: application/json
 
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
