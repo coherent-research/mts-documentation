@@ -756,15 +756,19 @@ Content-Type: application/json; charset=utf-8
 
 ## Rate limiting
 
-Rate limiting will be applied to the API.
+Rate limiting will be applied to the API. The rate limiting uses a simple fixed window algorithm limiting clients to N calls every X seconds (see Note 1).
 
 When the rate is exceeded the request will be rejected with the HTTP status code 429.
 
 ### JSON Response parameters
 
-| Name              | Type    | Value                                                                     | Mandatory |
-| ----------------- | ------- | ------------------------------------------------------------------------- | --------- |
-| backOffSuggestion | Integer | A suggested period that the caller should wait before retrying in seconds | YES       |
+| Name       | Type    | Value                                                                       | Mandatory |
+| ---------- | ------- | --------------------------------------------------------------------------- | --------- |
+| retryAfter | Integer | A suggested period (in seconds) that the client should wait before retrying | YES       |
+
+Notes
+
+1. Actual values to be decided.
 
 ## Input/Output Limits
 
