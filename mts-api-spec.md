@@ -608,7 +608,7 @@ A Status Summary Object contains the summary of the status of an individual test
 ### Sample
 
 ```
-GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700
+GET https://www.coherent-research.co.uk/MTS/test-search?fromTime=2022-01-01T00:00:00Z&meterType=ELSTERA1700
 Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -657,7 +657,7 @@ Content-Type: application/json; charset=utf-8
 ### Paging Sample
 
 ```
-GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=0
+GET https://www.coherent-research.co.uk/MTS/test-search?fromTime=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=0
 Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -692,7 +692,7 @@ Content-Type: application/json; charset=utf-8
     ]
 }
 
-GET https://www.coherent-research.co.uk/MTS/test-search?fromDate=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=1
+GET https://www.coherent-research.co.uk/MTS/test-search?fromTime=2022-01-01T00:00:00Z&meterType=ELSTERA1700&limit=2&offset=1
 Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
