@@ -11,12 +11,29 @@ This document describes the MTS Actions API which can be used by applications to
 ### Authentication
 
 All HTTP calls (with exceptions noted below) must contain an MTS Actions API Access Token contained in an Authorization header with the Bearer authentication scheme.
+An API Access token can be generated within the MTS application by an administrator. 
 
-An API Access token can be generated within the MTS application by an administrator. More details to come.
-
-> MTS Actions API uses a separate API token from MTS API.
+To generate a token go to the Extras - MTS API page. 
+Click **Create new token** and choose a valid duration (after which time the token will expire) and set the scope to **MTS Actions API**. Once the token has been created it must be copied and saved. 
+It is not possible to view the token in MTS once it has been generated. The token is not stored in MTS and it is the responsibility of the MTS administrator to store the token securely. If the administrator believes that a token is compromised they can delete it in MTS at any time.
 
 > Note that the MTS Actions API is only available over HTTPS.
+
+### Limitations
+The MTS Actions API is a work in progress and support for the actions does not exist for all meters. The table below shows the current action support:
+
+| Meter type/Action | time-update |
+|--------|----|
+| CEWEPRO | |
+| CEWEPRO100 | |
+| EDMIATLAS   | supported |
+| ELSTERA1700 | supported |
+| ELSTERAS230 | supported |
+| ELSTERA1140 | supported |
+| EMLITECOP10 | |
+| ISKRA_MX37X | supported |
+| LG_DLMS     | supported |
+| PREMIERPRI | |
 
 ### API Methods
 

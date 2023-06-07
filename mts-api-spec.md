@@ -17,7 +17,11 @@ This document describes the MTS API which can be used by applications to perform
 
 All HTTP calls (with exceptions noted below) must contain an API Access Token contained in an Authorization header with the Bearer authentication scheme.
 
-An API Access token can be generated within the MTS application by an administrator. More details to come.
+An API Access token can be generated within the MTS application by an administrator. 
+
+To generate a token go to the Extras - MTS API page. 
+Click **Create new token** and choose a valid duration (after which time the token will expire) and set the scope to **MTS API**. Once the token has been created it must be copied and saved. 
+It is not possible to view the token in MTS once it has been generated. The token is not stored in MTS and it is the responsibility of the MTS administrator to store the token securely. If the administrator believes that a token is compromised they can delete it in MTS at any time.
 
 > Note that the MTS API is only available over HTTPS.
 
