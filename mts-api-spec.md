@@ -4,6 +4,8 @@
 
 This document describes the MTS API which can be used by applications to perform MTS meter tests programmatically.
 
+> Note that the API methods batch-request, batch-cancel and batch-status are currently **not** implemented.
+
 ## Terminology
 
 - Server: refers to the MTS instance that receives the API calls.
@@ -33,17 +35,18 @@ The following methods are supported:
 | Method         | Type    | HTTP Verb | Purpose                                                          |
 | -------------- | ------- | --------- | ---------------------------------------------------------------- |
 | test-request   | Command | POST      | Request a new meter test                                         |
-| batch-request  | Command | POST      | Request a list of new meter tests in a batch                     |
+| batch-request [2] | Command | POST      | Request a list of new meter tests in a batch                     |
 | test-cancel    | Command | DELETE    | Cancel a previously requested test                               |
-| batch-cancel   | Command | DELETE    | Cancel a previously requested batch of tests                     |
+| batch-cancel [2]  | Command | DELETE    | Cancel a previously requested batch of tests                     |
 | test-status    | Query   | GET       | Read the current status of a previously requested test           |
-| batch-status   | Query   | GET       | Read the current status of a previously requested batch of tests |
+| batch-status [2]  | Query   | GET       | Read the current status of a previously requested batch of tests |
 | test-search    | Query   | GET       | Search for tests based on criteria such as date, meter type etc  |
-| service-status | Query   | GET       | Check the current status and version of the MTS server. Note 1.  |
+| service-status [1] | Query   | GET       | Check the current status and version of the MTS server.  |
 
 Notes
 
 1. This method does not require an access token.
+2. These methods are currently not implemented.
 
 ### Command Requests
 
