@@ -25,7 +25,7 @@ The MTS Actions API is a work in progress and support for the actions does not e
 | Meter type/Action | time-update |
 |--------|----|
 | CEWEPRO | |
-| CEWEPRO100 | |
+| CEWEPRO100 | supported |
 | EDMIATLAS   | supported |
 | ELSTERA1700 | supported |
 | ELSTERAS230 | supported |
@@ -62,7 +62,7 @@ A unique Test Id will be returned which can be used query the test status.
 | Name              | Type   | Value                                                                                                                                                                                                                                                                                                                                                          | Mandatory |
 | ----------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
 | requestReference  | String | Optional reference that the client may include in the request for their own use, e.g. MPAN. This parameter will be returned in the result but has no other significance.                                                                                                                                                                                       | NO        |
-| immediate         | Bool   | An boolean value. true => test will be run immediately, false => test will be run overnight. If omitted a value of false is assumed.                                                                                                                                                                                                                           | NO.       |
+| immediate         | Bool   | A boolean value. true => test will be run immediately, false => test will be run overnight. If omitted a value of false is assumed.                                                                                                                                                                                                                           | NO.       |
 | meterType         | String | Specifies the type of meter to be tested. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                                               | YES       |
 | remoteAddress     | String | Specifies the remote address used to connect to the meter. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                              | YES       |
 | comsSettings      | String | Normally this field should be omitted but for cases where meters are configured in a non standard way this field can be used to override the default coms settings. This is only applicable for modem connections and can be used to specify the data bits, parity and stop bits in the form DPS, e.g. 7E1 to specify 7 stop bits, even parity and 1 stop bit. | NO        |
