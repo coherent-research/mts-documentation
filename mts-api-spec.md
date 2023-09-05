@@ -747,7 +747,6 @@ This method takes no parameters.
 
 ```
 GET https://www.coherent-research.co.uk/MTS/service-status
-GET https://www.coherent-research.co.uk/MTS/test-status?testid=1234
 Accept: application/json
 
 HTTP/1.1 200 OK
