@@ -30,7 +30,7 @@ The MTS Actions API is a work in progress and support for the actions does not e
 | ELSTERA1700 | supported |
 | ELSTERAS230 | supported |
 | ELSTERA1140 | supported |
-| EMLITECOP10 | |
+| EMLITECOP10 | supported |
 | ISKRA_MX37X | supported |
 | LG_DLMS     | supported |
 | PREMIERPRI | |
