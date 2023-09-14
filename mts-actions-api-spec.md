@@ -90,9 +90,7 @@ Authorization: Bearer API-ACCESS-TOKEN
   "remoteAddress": "07777000000",
   "outstationAddress": "1",
   "serialNumber": "12345678",
-  "password": "AAAA0000",
-  "surveyDays": 10,
-  "surveyDate": "2019-12-01"
+  "password": "AAAA0000"
 }
 
 HTTP/1.1 200 OK
@@ -117,9 +115,7 @@ Authorization: Bearer API-ACCESS-TOKEN
   "remoteAddress": "abc",
   "outstationAddress": "1",
   "serialNumber": "12345678",
-  "password": "AAAA0000",
-  "surveyDays": 10,
-  "surveyDate": "2019-12-01"
+  "password": "AAAA0000"
 }
 
 HTTP/1.1 400 Bad Request
