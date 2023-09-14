@@ -4,8 +4,6 @@
 
 This document describes the MTS API which can be used by applications to perform MTS meter tests programmatically.
 
-> Note that the API methods batch-request, batch-cancel and batch-status are currently **not** implemented.
-
 ## Terminology
 
 - Server: refers to the MTS instance that receives the API calls.
@@ -35,18 +33,14 @@ The following methods are supported:
 | Method         | Type    | HTTP Verb | Purpose                                                          |
 | -------------- | ------- | --------- | ---------------------------------------------------------------- |
 | test-request   | Command | POST      | Request a new meter test                                         |
-| batch-request [2] | Command | POST      | Request a list of new meter tests in a batch                     |
 | test-cancel    | Command | DELETE    | Cancel a previously requested test                               |
-| batch-cancel [2]  | Command | DELETE    | Cancel a previously requested batch of tests                     |
 | test-status    | Query   | GET       | Read the current status of a previously requested test           |
-| batch-status [2]  | Query   | GET       | Read the current status of a previously requested batch of tests |
 | test-search    | Query   | GET       | Search for tests based on criteria such as date, meter type etc  |
 | service-status [1] | Query   | GET       | Check the current status and version of the MTS server.  |
 
 Notes
 
 1. This method does not require an access token.
-2. These methods are currently not implemented.
 
 ### Command Requests
 
@@ -187,59 +181,6 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-## batch-request command
-
-The batch-request command is used to request a set of new meter tests in one go. The request will return a BatchId that can be used to check the status of the whole set.
-
-### JSON Command Parameters
-
-The batch-request command must contain an array of objects as defined in the test-request command.
-
-### JSON Response parameters
-
-| Name    | Type    | Value             | Mandatory |
-| ------- | ------- | ----------------- | --------- |
-| batchId | Integer | The MTS batch ID. | YES       |
-
-### Sample - successful case
-
-```
-POST https://www.coherent-research.co.uk/MTS/batch-request
-Accept: application/json
-Content-type: application/json
-Authorization: Bearer API-ACCESS-TOKEN
-
-[
-  {
-     "requestReference": "ABC",
-     "meterType": "ELSTERA1700",
-     "remoteAddress": "07777000000",
-     "outstationAddress": "1",
-     "serialNumber": "12345678",
-     "password": "AAAA0000",
-     "surveyDays": 10,
-     "surveyDate": "2019-12-01"
-  },
-  {
-     "requestReference": "ABC",
-     "meterType": "ELSTERA1700",
-     "remoteAddress": "07777000001",
-     "outstationAddress": "1",
-     "serialNumber": "23456789",
-     "password": "AAAA0001",
-     "surveyDays": 3,
-     "surveyDate": "2019-12-02"
-  },
-]
-
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "batchId": 1234
-}
-```
-
 ## test-cancel command
 
 The client can request the cancellation of any previously requested test. MTS will remove the matching request from the queue. If the request has already been processed (or is being processed) MTS will respond positively.
@@ -273,47 +214,6 @@ Content-Type: application/json; charset=utf-8
 
 {
   "testId": 1234
-}
-```
-
-## batch-cancel command
-
-The client can request the cancellation of any previously requested batch of tests.
-Cancelling a batch of tests means that all pending tests will be deleted from the system. Optionally, all completed tests may also be deleted from the system.
-
-### JSON Request Parameters
-
-| Name            | Type    | Value                                                                                                                                                                                                                      | Mandatory |
-| --------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| batchId         | Integer | The batch ID returned by the batch-request command                                                                                                                                                                         | YES       |
-| deleteCompleted | Bool    | Delete completed tests. If set to _true_ all completed tests in the batch will be deleted. If set to _false_ competed tests will be kept by MTS but pending tests will be cancelled and deleted. Default value is _false_. | NO        |
-
-### JSON Response parameters
-
-| Name           | Type    | Value                                                                                                                      | Mandatory |
-| -------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- | --------- |
-| batchId        | String  | The batch ID returned by the batch-request command                                                                         | YES       |
-| cancelledCount | Integer | The number of tests cancelled. If _deleteCompleted_ is set to _false_ completed tests will not be included in this number. | YES       |
-
-### Sample - successful case
-
-```
-DELETE https://www.coherent-research.co.uk/MTS/batch-cancel
-Accept: application/json
-Content-type: application/json
-Authorization: Bearer API-ACCESS-TOKEN
-
-{
-  "batchId": 1234
-  "deleteCompleted": true
-}
-
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "testId": 1234,
-  "cancelledCount": 100
 }
 ```
 
@@ -488,85 +388,10 @@ Content-Type: application/json; charset=utf-8
 
 ```
 
-## batch-status query
-
-The client can request the status of any previously requested batch of tests using the Batch ID.
-This query will return a summary of all tests in the batch along with the individual Test IDs.
-To fetch the actual status (and the completed results) for a given test the test-status query must be used with the Test ID.
-
-### URL Request Parameters
-
-| Name    | Type    | Value                                           | Mandatory |
-| ------- | ------- | ----------------------------------------------- | --------- |
-| batchId | Integer | Batch ID returned by the batch-request command. | YES       |
-
-### JSON Response parameters
-
-| Name           | Type    | Value                                      | Mandatory |
-| -------------- | ------- | ------------------------------------------ | --------- |
-| batchId        | Integer | The MTS Batch ID.                          | YES       |
-| totalCount     | Integer | The total number of tests in the batch     | YES       |
-| completedCount | Integer | The number of completed tests in the batch | YES       |
-| status         | Array   | An array of Status Summary objects         | YES       |
-
-**Status Summary Object**
-
-A Status Summary Object contains the summary of the status of an individual test.
-
-| Name             | Type    | Value                                                                 | Mandatory |
-| ---------------- | ------- | --------------------------------------------------------------------- | --------- |
-| testId           | Integer | The unique Test ID for the test                                       | YES       |
-| requestReference | String  |                                                                       | NO        |
-| meterType        | String  |                                                                       | YES       |
-| remoteAddress    | String  |                                                                       | YES       |
-| resultSummary    | String  | This parameter will have the same format as in the test-status query. | YES       |
-
-### Sample
-
-```
-GET https://www.coherent-research.co.uk/MTS/batch-status?batchId=1234
-Accept: application/json
-Authorization: Bearer API-ACCESS-TOKEN
-
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "batchId": 1234,
-  "totalCount": 3,
-  "completedCount": 1,
-  "status": [
-    {
-      "testId": 1000,
-      "requestReference": "0001",
-      "meterType": "ELSTERA1700",
-      "remoteAddress": "07777000000",
-      "resultSummary": "SUCCESS",
-    },
-    {
-      "testId": 1001,
-      "requestReference": "0002",
-      "meterType": "ELSTERA1700",
-      "remoteAddress": "07777000001",
-      "resultSummary": "PENDING",
-    },
-    {
-      "testId": 1002,
-      "requestReference": "0003",
-      "meterType": "ELSTERA1700",
-      "remoteAddress": "07777000002",
-      "resultSummary": "PENDING",
-    }
-  ]
-}
-```
-
 ## test-search query
 
 This query allows the client to search the system for tests that match the specified search criteria. The query will return a list of matching tests.
 Since there may be a large number of results the client may read the results in pages by using the **limit** and **offset** parameters.
-
-> Note that matching tests will be returned irrespective of whether they were initiated via a test-request command or a batch-request command
 
 | Name             | Type    | Value                                                                                                                               | Mandatory |
 | ---------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------- |
@@ -606,7 +431,6 @@ A Status Summary Object contains the summary of the status of an individual test
 | testId             | Integer | The unique Test ID for the test                                       | YES       |
 | receivedTimestamp  | String  | UTC time in the format YYYY-MM-DDTHH:mm:ssZ                           | YES       |
 | completedTimestamp | String  | UTC time in the format YYYY-MM-DDTHH:mm:ssZ                           | NO        |
-| batchId            | Integer | The unique Batch ID for the test if applicable                        | NO        |
 | requestReference   | String  |                                                                       | NO        |
 | meterType          | String  |                                                                       | YES       |
 | remoteAddress      | String  |                                                                       | YES       |
@@ -639,7 +463,6 @@ Content-Type: application/json; charset=utf-8
       },
       {
         "testId": 1001,
-        "batchId": 123,
         "requestReference": "0002",
         "meterType": "ELSTERA1700",
         "receivedTimestamp": "2022-01-01T00:01:00Z",
@@ -649,7 +472,6 @@ Content-Type: application/json; charset=utf-8
       },
       {
         "testId": 1002,
-        "batchId": 123,
         "requestReference": "0003",
         "meterType": "ELSTERA1700",
         "receivedTimestamp": "2022-01-01T00:01:00Z",
@@ -688,7 +510,6 @@ Content-Type: application/json; charset=utf-8
       },
       {
         "testId": 1001,
-        "batchId": 123,
         "requestReference": "0002",
         "meterType": "ELSTERA1700",
         "receivedTimestamp": "2022-01-01T00:01:00Z",
@@ -714,7 +535,6 @@ Content-Type: application/json; charset=utf-8
     [
       {
         "testId": 1002,
-        "batchId": 123,
         "requestReference": "0003",
         "meterType": "ELSTERA1700",
         "receivedTimestamp": "2022-01-01T00:01:00Z",
@@ -782,8 +602,7 @@ The following limits are applied by the server:
 
 | Limit                                                                              | Value  |
 | ---------------------------------------------------------------------------------- | ------ |
-| The number of tests in a single batch.                                             | Note 1 |
-| The maximum number of survey days requested per test.                              |        |
+| The maximum number of survey days requested per test.                              | Note 1 |
 | The maximum time range in a search query.                                          |        |
 | The maximum limit size in a search query.                                          |        |
 | The maximum number of results returned by a search query if no limit is specified. |        |
