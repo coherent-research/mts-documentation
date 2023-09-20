@@ -50,18 +50,18 @@ The following methods are supported:
 
 ## time-update command
 
-The test-update command is used to set the meter time to the current GMT time.
+The time-update command is used to set the meter time to the current GMT time.
 This action will only attempt to adjust the time if it deviates more that a fixed amount as determined by the MTS configuration.
 
-A unique Test Id will be returned which can be used query the test status.
+A unique Request Id will be returned which can be used query the status.
 
 ### JSON Command Parameters
 
 | Name              | Type   | Value                                                                                                                                                                                                                                                                                                                                                          | Mandatory |
 | ----------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
 | requestReference  | String | Optional reference that the client may include in the request for their own use, e.g. MPAN. This parameter will be returned in the result but has no other significance.                                                                                                                                                                                       | NO        |
-| immediate         | Bool   | A boolean value. true => test will be run immediately, false => test will be run overnight. If omitted a value of false is assumed.                                                                                                                                                                                                                           | NO.       |
-| meterType         | String | Specifies the type of meter to be tested. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                                               | YES       |
+| immediate         | Bool   | A boolean value. true => action will be run immediately, false => action will be run overnight. If omitted a value of false is assumed.                                                                                                                                                                                                                           | NO.       |
+| meterType         | String | Specifies the type of meter as specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                                               | YES       |
 | remoteAddress     | String | Specifies the remote address used to connect to the meter. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                              | YES       |
 | comsSettings      | String | Normally this field should be omitted but for cases where meters are configured in a non standard way this field can be used to override the default coms settings. This is only applicable for modem connections and can be used to specify the data bits, parity and stop bits in the form DPS, e.g. 7E1 to specify 7 stop bits, even parity and 1 stop bit. | NO        |
 | outstationAddress | String | Specifies the outstation address/device id of the meter.                                                                                                                                                                                                                                                                                                       | NO        |
@@ -125,10 +125,10 @@ Content-Type: application/json; charset=utf-8
 ```
 ## meter-configure command
 
-The meter-configure command is used to upload a configureation file to a meter.
+The meter-configure command is used to upload a configuration file to a meter.
 The contents of the file must be included in one of 2 formats: text or binary-base64.
 
-A unique Test Id will be returned which can be used query the test status.
+A unique Request Id will be returned which can be used query the status.
 
 For meters that expect a configuration file to be in a text format the contentsType should
 be set to **text**. All control characters in the text **must** be escaped using the \ character and sent as a two-character sequences, e.g. a new line must appear as \\n and a carriage return as \\r.  A \ character must also be escaped and appear as \\\\. For more information see chapter 2.5 of [RFC 4627][1].
@@ -144,8 +144,8 @@ For meters that expect a configuration file to be in a binary format the content
 | Name              | Type   | Value                                                                                                                                                                                                                                                                                                                                                          | Mandatory |
 | ----------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
 | requestReference  | String | Optional reference that the client may include in the request for their own use, e.g. MPAN. This parameter will be returned in the result but has no other significance.                                                                                                                                                                                       | NO        |
-| immediate         | Bool   | A boolean value. true => test will be run immediately, false => test will be run overnight. If omitted a value of false is assumed.                                                                                                                                                                                                                           | NO.       |
-| meterType         | String | Specifies the type of meter to be tested. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                                               | YES       |
+| immediate         | Bool   | A boolean value. true => action will be run immediately, false => action will be run overnight. If omitted a value of false is assumed.                                                                                                                                                                                                                           | NO.       |
+| meterType         | String | Specifies the type of meter as specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                                               | YES       |
 | remoteAddress     | String | Specifies the remote address used to connect to the meter. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                              | YES       |
 | comsSettings      | String | Normally this field should be omitted but for cases where meters are configured in a non standard way this field can be used to override the default coms settings. This is only applicable for modem connections and can be used to specify the data bits, parity and stop bits in the form DPS, e.g. 7E1 to specify 7 stop bits, even parity and 1 stop bit. | NO        |
 | outstationAddress | String | Specifies the outstation address/device id of the meter.                                                                                                                                                                                                                                                                                                       | NO        |
@@ -244,7 +244,7 @@ The client can request the status of any previously requested action using the r
 | outstationAddress         | String  | Note 1                                                                                                                                                                                                                                                                                                                        | NO        |
 | password                  | String  | Note 1                                                                                                                                                                                                                                                                                                                        | YES       |
 | action                    | String  | Indicates the action the was requested. Values are "TimeUpdate", "MeterConfigure"                                                                                                                                                                                                                                                               | YES       |
-| result                    | String  | Indicates the overall result of the collection request. Values are "PENDING" (i.e. the collection has not been performed yet), "SUCCESS", "PARTIAL SUCCESS" (note 3) or "ERROR: details" where details describe the problem that caused the test to fail.                                                                     | YES       |
+| result                    | String  | Indicates the overall result of the command. Values are "PENDING" (i.e. the command has not been performed yet), "SUCCESS" or "ERROR: details" where details describe the problem that caused the command to fail.                                                                     | YES       |
 | actionRequestTime         | String  | The time the action command was received                                                                                                                                                                                                                                                                                      | NO        |
 | actionStartTime           | String  | The time the action started. In the case of multiple retries this will be the start of the first attempt. Note 1                                                                                                                                                                                                              | NO        |
 | actionEndTime             | String  | The time the action ended. In the case of multiple retries this will be the end of the last attempt. Note 1                                                                                                                                                                                                                   | NO.       |
@@ -257,7 +257,7 @@ The client can request the status of any previously requested action using the r
 
 Notes:
 
-1. The parameters from the original test-request command are repeated here.
+1. The parameters from the original command are repeated here.
 2. All times are in UTC and in the format YYYY-MM-DDTHH:mm:ssZ
 3. These properties are only applicable for the Time-Update action.
 
@@ -280,7 +280,7 @@ Content-Type: application/json; charset=utf-8
 ### Sample - successfully completed time-update action
 
 ```
-GET https://www.coherent-research.co.uk/MTS/test-status?requestId=1234
+GET https://www.coherent-research.co.uk/MTS/action-status?requestId=1234
 Accept: application/json
 Authorization: Bearer API-ACCESS-TOKEN
 
@@ -297,8 +297,8 @@ Content-Type: application/json; charset=utf-8
   "password": "AAAA0000",
   "actionType": "TIME-UPDATE",
   "resultSummary": "SUCCESS",
-  "testStartTime": "2019-01-02T04:00:00",
-  "testEndTime": "2019-01-02T04:01:30",
+  "actionStartTime": "2019-01-02T04:00:00",
+  "actionEndTime": "2019-01-02T04:01:30",
   "connectionStartTime": "2019-01-02T04:02:00",
   "connectionEndTime": "2019-01-02T04:01:28",
   "serialNumber": "12345678",
