@@ -358,19 +358,40 @@ Content-Type: application/json; charset=utf-8
       "value": "CT: 600:5 VT: 1:1"
     }
   ],
-  "registerValues": [
+  "registers": [
     {
-      "name": "kWh Import",
-      "timestamp": "2019-01-02T04:02:10Z",
-      "value": "758",
-      "units": "kWh"
+      "category": "Energy",
+      "registerValues": [
+        {
+          "name": "Active Energy Import",
+          "value": "879",
+          "units": "kWh"
+        },
+        {
+          "name": "Active Energy Export",
+          "value": "2,380,181",
+          "units": "kWh"
+        }
     },
     {
-      "name": "kvarh Q1",
-      "timestamp": "2019-01-02T04:02:11Z",
-      "value": "1190",
-      "units": "kvarh"
-    }
+      "category": "Instantaneous",
+      "registerValues": [
+        {
+          "name": "Total Active Power",
+          "value": "-1,990.000",
+          "units": "kW"
+        }
+    },
+    {
+      "category": "Miscellaneous",
+      "registerValues": [
+        {
+          "name": "Firmware",
+          "value": "B40",
+          "units": ""
+        }
+      ]
+    }        
   ],
   "surveyData": [
     {
