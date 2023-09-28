@@ -249,7 +249,9 @@ The client can request the status of any previously requested test using the Tes
 | serialNumber        | String           | The serial number received from the meter, or "ERROR: details" if it was not possible to fetch the serial number from the meter or if the serial number from the request is included and does not match the serial number read from the meter.                                                                                                               | NO        |
 | meterTime           | String           | The meter date/time received from the meter with an offset in seconds from the time the test took place in the format YYYY-MM-DDTHH:mm:ss +/- Ns, e.g. 2014-10-31T23:33:32 -203s (indicates that the time was 203 seconds behind the real time when it was read). If no time was read this will contain "ERROR: details" where details describe the problem. | NO        |
 | statusEvents        | Array of strings | An array of strings representing status events indicated by the meter. These will vary by meter type                                                                                                                                                                                                                                                         | NO        |
-| registerValues      | Array            | An array of Register Value objects. See below                                                                                                                                                                                                                                                                                                                | NO        |
+| meterProperties | Array | An array of Name Value objects containing various meter configuration properties, e.g. CT\VT ratio. See below. | NO |
+| profileConfiguration      | Array            | An array of strings containing the register names in the meter configured for profile recording. Note 4.                                                                                                                                                                                                                                                               | NO        |
+| registerValues      | Array            | An array of Register Group objects, each of which contains an array of Register Value objects. See below.                                                                       | NO        |
 | surveyData          | Array            | An array of Register Survey Data objects. If no survey data was requested this property will be omitted. See below                                                                                                                                                                                                                                           | NO        |
 
 Notes:
@@ -257,10 +259,29 @@ Notes:
 1. The parameters from the original test-request command are repeated here.
 2. All times are in UTC and in the format YYYY-MM-DDTHH:mm:ssZ
 3. A test will be considered partially successful if some, but not all, of the data was collected.
+4. MTS may not be configured to read this information and may therefore not be available. 
+
+**Name Value Object**
+
+A Name Value Object contains a property read from the meter.
+
+| Name  | Type   | Value                                           | Mandatory |
+| ----- | ------ | ----------------------------------------------- | --------- |
+| name  | String | The register name (depending on the meter type) | YES       |
+| value | String | The value of the property                       |
+
+**Register Group Object**
+A Register Group Object contains an array of Register Value Objects for a given 
+category, e.g. Energy Registes, Instantaneous Regisers and Miscellaneous Registers are all grouped into their own category.
+
+| Name  | Type   | Value                                           | Mandatory |
+| ----- | ------ | ----------------------------------------------- | --------- |
+| category  | String | The category of the registers. Values are 'Energy', 'Instantaneous', 'Miscellaneous' and 'Time of Use' | YES       |
+| registerValues | Array  | Array of Register Value Objects | YES |
 
 **Register Value Object**
 
-A Register Value Object contains an instantaneous value read from the meter.
+A Register Value Object contains a register value read from the meter.
 
 | Name  | Type   | Value                                           | Mandatory |
 | ----- | ------ | ----------------------------------------------- | --------- |
@@ -330,6 +351,12 @@ Content-Type: application/json; charset=utf-8
   "meterTime": "2019-01-02T03T04:02:15 +10s",
   "statusEvents" : [
     "Lid/terminal cover tamper"
+  ],   
+  "meterProperties": [
+    {
+      "name": "CT\\VT ratios",
+      "value": "CT: 600:5 VT: 1:1"
+    }
   ],
   "registerValues": [
     {
