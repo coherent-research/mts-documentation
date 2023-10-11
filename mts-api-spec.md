@@ -447,7 +447,7 @@ Since there may be a large number of results the client may read the results in 
 | fromTime         | String  | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ                                                                                       | YES       |
 | toTime           | String  | A UTC time in the format YYYY-MM-DDTHH:mm:ssZ                                                                                       | NO        |
 | meterType        | String  | Filter results by meter type.                                                                                                       | NO        |
-| remoteAddress    | String  | Filter results by remote address. Note that partial matches are included.                                                           | NO        |
+| remoteAddress    | String  | Filter results by remote address.                                                            | NO        |
 | status           | String  | Filter results by status. Values are "ALL", "COMPLETED", "PENDING". Default = ALL                                                   | NO        |
 | limit            | Integer | The maximum number of results the server will return in one request. Note 1.                                                        | NO        |
 | offset           | Integer | The number of results to skip. If omitted a value of 0 is assumed.                                                                  | NO        |
