@@ -20,33 +20,36 @@ It is not possible to view the token in MTS once it has been generated. The toke
 > Note that the MTS Actions API is only available over HTTPS.
 
 ### Actions
+The actions that can be performed are as follows:
 _TimeUpdate_
 
-The _TimeUpdate_ command is used to set the meter time to the current GMT time.
+Used to set the meter time to the current GMT time.
 This action will only attempt to adjust the time if it deviates more that a fixed amount as determined by the MTS configuration.
 
 _MeterConfigure_
 
-The meter-configure command is used to upload a configuration file to a meter.
+Used to upload a configuration file to a meter.
 The contents of the file must be included in one of 2 formats: text or binary-base64.
 
-A unique Request Id will be returned which can be used query the status.
+_ApnSet_
+
+Used to set the APN value. 
 
 ### Limitations
 The MTS Actions API is a work in progress and support for the actions does not exist for all meters. The table below shows the current action support:
 
-| Meter type/Action | TimeUpdate | MeterConfigure |
-|--------|----|----|
-| CEWEPRO | | |
-| CEWEPRO100 | supported | |
-| EDMIATLAS   | supported | |
-| ELSTERA1700 | supported | |
-| ELSTERAS230 | supported | |
-| ELSTERA1140 | supported | |
-| EMLITECOP10 | supported | supported |
-| ISKRA_MX37X | supported | |
-| LG_DLMS     | supported | |
-| PREMIERPRI | | |
+| Meter type/Action | TimeUpdate | MeterConfigure | ApnSet |
+|--------|----|----|---|
+| CEWEPRO | | | |
+| CEWEPRO100 | supported | | |
+| EDMIATLAS   | supported | | supported |
+| ELSTERA1700 | supported | | |
+| ELSTERAS230 | supported | | |
+| ELSTERA1140 | supported | | |
+| EMLITECOP10 | supported | supported | |
+| ISKRA_MX37X | supported | | |
+| LG_DLMS     | supported | | |
+| PREMIERPRI | | | |
 
 ### API Methods
 
@@ -55,11 +58,11 @@ The following methods are supported:
 
 | Method        | Type    | HTTP Verb | Purpose                                                   |
 | ------------- | ------- | --------- | --------------------------------------------------------- |
-| time-update **DEPRECATED**  | Command | POST      | Set time for a meter to the current time.       |
-| meter-configure **DEPRECATED**  | Command | POST      | Upload a configuration file to a meter.        |
 | action-request | Command | POST | Request an action to be performed on a meter.  |
 | action-status | Query   | GET       | Read the current status of a previously requested action. |
-| action-cancel | Query   | DELETE       | Cancel a previously requested action.                     |
+| action-cancel | Command   | DELETE       | Cancel a previously requested action.                     
+| time-update **DEPRECATED**  | Command | POST      | Set time for a meter to the current time.       |
+| meter-configure **DEPRECATED**  | Command | POST      | Upload a configuration file to a meter.        |
 
 ## action-request command
 
@@ -77,10 +80,11 @@ A unique Request ID will be returned which can be used query the action status.
 | remoteAddress     | String | Specifies the remote address used to connect to the meter. As specified in the MTS user guide for batch requests.                                                                                                                                                                                                                                              | YES       |
 | comsSettings      | String | Normally this field should be omitted but for cases where meters are configured in a non standard way this field can be used to override the default coms settings. This is only applicable for modem connections and can be used to specify the data bits, parity and stop bits in the form DPS, e.g. 7E1 to specify 7 stop bits, even parity and 1 stop bit. | NO        |
 | outstationAddress | String | Specifies the outstation address/device id of the meter.                                                                                                                                                                                                                                                                                                       | NO        |
-| serialNumber      | String | The meter serial number. If included a check will be made to determine if the meter returns this serial number and an error will be reported if there is a mismatch                                                                                                                                                                                            | NO        |
+| serialNumber      | String | The meter serial number.A check will be made to determine if the meter returns this serial number and an error will be reported if there is a mismatch and the action will NOT proceed.                                                                                                                                                                                           | YES        |
 | password          | String | The meter password. | NO |
 | timeUpdate | Bool | Perform the TimeUpdate action. | NO |
 | meterConfigure | Meter Configuration Parameters | Perform the TimeUpdate action. | NO |
+| apnSet | APN Set Parameters | Perform the ApnSet action. | NO |
 
 #### Meter Configuration Parameters
 
@@ -98,6 +102,11 @@ For meters that expect a configuration file to be in a binary format the content
 
 [2]: https://www.ietf.org/rfc/rfc4648.txt
 
+#### APS Set Parameters
+
+| Name      | Type    | Value               | Mandatory |
+|-----------|---------|---------------------|-----------|
+| apn | String | The new APN register value. | YES.   |
 
 ### JSON Response parameters
 
@@ -157,7 +166,33 @@ Content-Type: application/json; charset=utf-8
   "requestId": 1234
 }
 ```
+### Sample - ApnSet request
 
+```
+POST https://www.coherent-research.co.uk/MTS/action-request
+Accept: application/json
+Content-type: application/json
+Authorization: Bearer API-ACCESS-TOKEN
+
+{
+  "requestReference": "ABC",
+  "meterType": "EMLITECOP10",
+  "remoteAddress": "12.34.56.78:1000",
+  "outstationAddress": "1",
+  "serialNumber": "12345678",
+  "password": "AAAA0000",
+  "apnSet": {
+    "apn": "hello.world"
+  }  
+}
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+  "requestId": 1234
+}
+```
 ### Sample - error case
 
 ```
