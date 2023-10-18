@@ -83,7 +83,7 @@ A unique Request ID will be returned which can be used query the action status.
 | serialNumber      | String | The meter serial number.A check will be made to determine if the meter returns this serial number and an error will be reported if there is a mismatch and the action will NOT proceed.                                                                                                                                                                                           | YES        |
 | password          | String | The meter password. | NO |
 | timeUpdate | Bool | Perform the TimeUpdate action. | NO |
-| meterConfigure | Meter Configuration Parameters | Perform the TimeUpdate action. | NO |
+| meterConfigure | Meter Configuration Parameters | Perform the MeterConfigure action. | NO |
 | apnSet | APN Set Parameters | Perform the ApnSet action. | NO |
 
 #### Meter Configuration Parameters
