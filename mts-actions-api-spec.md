@@ -31,14 +31,14 @@ _MeterConfigure_
 Used to upload a configuration file to a meter.
 The contents of the file must be included in one of 2 formats: text or binary-base64.
 
-_ApnSet_
+_GprsSetup_
 
-Used to set the APN value. 
+Used to set the GPRS values. 
 
 ### Limitations
 The MTS Actions API is a work in progress and support for the actions does not exist for all meters. The table below shows the current action support:
 
-| Meter type/Action | TimeUpdate | MeterConfigure | ApnSet |
+| Meter type/Action | TimeUpdate | MeterConfigure | GprsSetup |
 |--------|----|----|---|
 | CEWEPRO | | | |
 | CEWEPRO100 | supported | | |
@@ -50,6 +50,9 @@ The MTS Actions API is a work in progress and support for the actions does not e
 | ISKRA_MX37X | supported | | |
 | LG_DLMS     | supported | | |
 | PREMIERPRI | | | |
+
+### Multiple actions
+It is possible to combine the TimeUpdate action with one other action in a single request provided the meter type supports both. It is not possible to combine other actions even if the meter type supports both.
 
 ### API Methods
 
@@ -84,7 +87,7 @@ A unique Request ID will be returned which can be used query the action status.
 | password          | String | The meter password. | NO |
 | timeUpdate | Bool | Perform the TimeUpdate action. | NO |
 | meterConfigure | Meter Configuration Parameters | Perform the MeterConfigure action. | NO |
-| apnSet | APN Set Parameters | Perform the ApnSet action. | NO |
+| gprsSetup | GPRS Parameters | Perform the GprsSetup action. | NO |
 
 #### Meter Configuration Parameters
 
@@ -102,11 +105,15 @@ For meters that expect a configuration file to be in a binary format the content
 
 [2]: https://www.ietf.org/rfc/rfc4648.txt
 
-#### APS Set Parameters
+#### GPRS Parameters
+At least of these parameters must be included with a value. If a parameter is not included the register value will not be changed.
 
 | Name      | Type    | Value               | Mandatory |
 |-----------|---------|---------------------|-----------|
-| apn | String | The new APN register value. | YES.   |
+| apn | String | The new APN register value. | NO.   |
+| meterUdpPort | Integer | The new meter UDP port register value. | NO.   |
+
+
 
 ### JSON Response parameters
 
@@ -166,7 +173,7 @@ Content-Type: application/json; charset=utf-8
   "requestId": 1234
 }
 ```
-### Sample - ApnSet request
+### Sample - GprsSetup request
 
 ```
 POST https://www.coherent-research.co.uk/MTS/action-request
@@ -181,8 +188,9 @@ Authorization: Bearer API-ACCESS-TOKEN
   "outstationAddress": "1",
   "serialNumber": "12345678",
   "password": "AAAA0000",
-  "apnSet": {
-    "apn": "hello.world"
+  "gprsSetup": {
+    "apn": "hello.world",
+    "meterUdpPort": 123
   }  
 }
 
