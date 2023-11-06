@@ -21,6 +21,7 @@ It is not possible to view the token in MTS once it has been generated. The toke
 
 ### Actions
 The actions that can be performed are as follows:
+
 _TimeUpdate_
 
 Used to set the meter time to the current GMT time.
@@ -95,6 +96,7 @@ A unique Request ID will be returned which can be used query the action status.
 |-----------|---------|---------------------|-----------|
 | contents | String | The content of the configuration file as an Unicode string. See comments above. | YES.   |
 | contentsType | String |               This can have the values 'text' or 'binary-base64'. | NO. Default value is 'text'. |     
+| fileName | String |               File name of the configuration file. | YES. |     
 
 For meters that expect a configuration file to be in a text format the contentsType should
 be set to **text**. All control characters in the text **must** be escaped using the \ character and sent as a two-character sequences, e.g. a new line must appear as \\n and a carriage return as \\r.  A \ character must also be escaped and appear as \\\\. For more information see chapter 2.5 of [RFC 4627][1].
