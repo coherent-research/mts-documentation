@@ -24,36 +24,38 @@ The actions that can be performed are as follows:
 
 _TimeUpdate_
 
-Used to set the meter time to the current GMT time.
-This action will only attempt to adjust the time if it deviates more that a fixed amount as determined by the MTS configuration.
+Used to update the meter time to the current GMT time.
+This action will only attempt to adjust the time if it deviates more than a fixed amount as determined by the MTS configuration.
+
+_TimeSet_
+
+Used to set the meter time to an arbitrary value for test purposes.
+This action will not allow the time to be set if it deviates from the current time by more than a fixed amount as determined by the MTS configuration.
 
 _MeterConfigure_
 
 Used to upload a configuration file to a meter.
 The contents of the file must be included in one of 2 formats: text or binary-base64.
 
-_GprsSetup_
-
-Used to set the GPRS values. 
-
 ### Limitations
 The MTS Actions API is a work in progress and support for the actions does not exist for all meters. The table below shows the current action support:
 
-| Meter type/Action | TimeUpdate | MeterConfigure | GprsSetup |
+| Meter type/Action | TimeUpdate | TimeSet | MeterConfigure |
 |--------|----|----|---|
-| CEWEPRO | | | |
-| CEWEPRO100 | supported | | |
-| EDMIATLAS   | supported | | work in progress |
-| ELSTERA1700 | supported | | |
-| ELSTERAS230 | supported | | |
-| ELSTERA1140 | supported | | |
-| EMLITECOP10 | supported | supported | |
-| ISKRA_MX37X | supported | | |
-| LG_DLMS     | supported | | |
-| PREMIERPRI | | | |
+| CEWEPRO | | | | 
+| CEWEPRO100 | supported | | | 
+| EDMIATLAS   | supported | |  | 
+| ELSTERA1700 | supported | | | 
+| ELSTERAS230 | supported | | | 
+| ELSTERA1140 | supported | | | 
+| EMLITECOP10 | supported | supported | supported | 
+| ISKRA_MX37X | supported | | | 
+| LG_DLMS     | supported | | | 
+| PREMIERPRI | | | | 
+
 
 ### Multiple actions
-It is possible to combine the TimeUpdate action with one other action in a single request provided the meter type supports both. It is not possible to combine other actions even if the meter type supports both.
+It is possible to combine the TimeUpdate action with one other action (excluding TimeSet) in a single request provided the meter type supports both. It is not possible to combine other actions even if the meter type supports both.
 
 ### API Methods
 
@@ -87,8 +89,16 @@ A unique Request ID will be returned which can be used query the action status.
 | serialNumber      | String | The meter serial number.A check will be made to determine if the meter returns this serial number and an error will be reported if there is a mismatch and the action will NOT proceed.                                                                                                                                                                                           | YES        |
 | password          | String | The meter password. | NO |
 | timeUpdate | Bool | Perform the TimeUpdate action. | NO |
+| timeSet    | Time Set Parameters | Perform the TimeSet actions. | NO |
 | meterConfigure | Meter Configuration Parameters | Perform the MeterConfigure action. | NO |
-| gprsSetup | GPRS Parameters | Perform the GprsSetup action. | NO |
+
+#### Time Set Parameters
+
+| Name      | Type    | Value               | Mandatory |
+|-----------|---------|---------------------|-----------|
+| time | String | The new APN register value. | YES.   |
+
+The time must be in UTC and in the format YYYY-MM-DDTHH:mm:ssZ.
 
 #### Meter Configuration Parameters
 
@@ -106,16 +116,6 @@ be set to **text**. All control characters in the text **must** be escaped using
 For meters that expect a configuration file to be in a binary format the contentsType shouild be set to **binary-base64** and the contents encoded as a Base 64 string. For more information see [RFC 4648][2]
 
 [2]: https://www.ietf.org/rfc/rfc4648.txt
-
-#### GPRS Parameters
-At least of these parameters must be included with a value. If a parameter is not included the register value will not be changed.
-
-| Name      | Type    | Value               | Mandatory |
-|-----------|---------|---------------------|-----------|
-| apn | String | The new APN register value. | NO.   |
-| meterUdpPort | Integer | The new meter UDP port register value. | NO.   |
-
-
 
 ### JSON Response parameters
 
@@ -175,34 +175,7 @@ Content-Type: application/json; charset=utf-8
   "requestId": 1234
 }
 ```
-### Sample - GprsSetup request
 
-```
-POST https://www.coherent-research.co.uk/MTS/action-request
-Accept: application/json
-Content-type: application/json
-Authorization: Bearer API-ACCESS-TOKEN
-
-{
-  "requestReference": "ABC",
-  "meterType": "EMLITECOP10",
-  "remoteAddress": "12.34.56.78:1000",
-  "outstationAddress": "1",
-  "serialNumber": "12345678",
-  "password": "AAAA0000",
-  "gprsSetup": {
-    "apn": "hello.world",
-    "meterUdpPort": 123
-  }  
-}
-
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-  "requestId": 1234
-}
-```
 ### Sample - error case
 
 ```
