@@ -44,13 +44,13 @@ The MTS Actions API is a work in progress and support for the actions does not e
 |--------|----|----|---|
 | CEWEPRO | | | | 
 | CEWEPRO100 | supported | | | 
-| EDMIATLAS   | supported | |  | 
+| EDMIATLAS   | supported | supported |  | 
 | ELSTERA1700 | supported | | | 
 | ELSTERAS230 | supported | | | 
 | ELSTERA1140 | supported | | | 
 | EMLITECOP10 | supported | supported | supported | 
 | ISKRA_MX37X | supported | | | 
-| LG_DLMS     | supported | | | 
+| LG_DLMS     | supported | supported| | 
 | PREMIERPRI | | | | 
 
 
